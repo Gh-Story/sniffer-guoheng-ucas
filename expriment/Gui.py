@@ -18,11 +18,11 @@ class SnifferGui(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         #顶部栏 状态栏 菜单栏
-        self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
-        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.gridLayoutBar = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayoutBar.setObjectName("gridLayoutBar")
         #主显示
-        self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.setObjectName("gridLayout")
+        self.gridLayoutMainShow = QtWidgets.QGridLayout()
+        self.gridLayoutMainShow.setObjectName("gridLayoutMainShow")
         #下面部份
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -45,7 +45,7 @@ class SnifferGui(object):
         self.textBrowserShow.setObjectName("textBrowserShow")
         self.horizontalLayout.addWidget(self.textBrowserShow)
 
-        self.gridLayout.addLayout(self.horizontalLayout, 2, 0, 1, 1)#rowIndex,colIndex,rowWidth,colWidth
+        self.gridLayoutMainShow.addLayout(self.horizontalLayout, 2, 0, 1, 1)#rowIndex,colIndex,rowWidth,colWidth
 
         #中间部分
         self.treeWidget = QtWidgets.QTreeWidget(self.centralwidget)
@@ -55,8 +55,8 @@ class SnifferGui(object):
         sizePolicy.setHeightForWidth(self.treeWidget.sizePolicy().hasHeightForWidth())
         self.treeWidget.setSizePolicy(sizePolicy)
         self.treeWidget.setObjectName("treeWidget")
-        self.treeWidget.headerItem().setText(0, "1")
-        self.gridLayout.addWidget(self.treeWidget, 1, 0, 1, 1)
+        self.treeWidget.headerItem().setText(0, "root")
+        self.gridLayoutMainShow.addWidget(self.treeWidget, 1, 0, 1, 1)
 
 
         #上面部分
@@ -83,10 +83,10 @@ class SnifferGui(object):
         self.tableWidget.setHorizontalHeaderItem(5, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(6, item)
-        self.gridLayout.addWidget(self.tableWidget, 0, 0, 1, 1)
+        self.gridLayoutMainShow.addWidget(self.tableWidget, 0, 0, 1, 1)
 
         #顶部工具栏 菜单栏 状态栏
-        self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
+        self.gridLayoutBar.addLayout(self.gridLayoutMainShow, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         '''
         菜单栏暂时不做，因为只做一部分功能，作为功能栏就行了。当功能达到一定规模就可以分类形成菜单栏
@@ -110,7 +110,7 @@ class SnifferGui(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Sniffer"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "SnifferGui"))
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "序号"))
         item = self.tableWidget.horizontalHeaderItem(1)
@@ -125,7 +125,18 @@ class SnifferGui(object):
         item.setText(_translate("MainWindow", "长度"))
         item = self.tableWidget.horizontalHeaderItem(6)
         item.setText(_translate("MainWindow", "信息"))
-        self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
+        self.toolBar.setWindowTitle(_translate("MainWindow", "工具栏"))
+
+        self.tableWidget.horizontalHeader().setSectionsClickable(False) #可以禁止点击表头的列
+        self.tableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows) #设置 不可选择单个单元格，只可选择一行。
+        self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers) #设置表格不可更改
+        self.tableWidget.verticalHeader().setVisible(False) #去掉垂直表头
+        self.tableWidget.setColumnWidth(0,60)
+        self.tableWidget.setColumnWidth(2,150)
+        self.tableWidget.setColumnWidth(3,150)
+        self.tableWidget.setColumnWidth(4,60)
+        self.tableWidget.setColumnWidth(5,60)
+        self.tableWidget.setColumnWidth(6,600)
 
 
 if __name__ == "__main__":
