@@ -12,5 +12,11 @@ import multiprocessing
 from scapy.layers import http
 import numpy as np
 import matplotlib.pyplot as plt
-if __name__ == '__main__':
-    
+
+class Sniffer():
+    def __init__(self) -> None:
+        pass
+
+def SnifferRun():
+    sn = Sniffer()
+    return sn

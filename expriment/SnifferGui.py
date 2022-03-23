@@ -8,6 +8,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import sys
+import os
 
 class SnifferGui(object):
     def setupUi(self, MainWindow):
@@ -100,11 +101,38 @@ class SnifferGui(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        self.toolBar = QtWidgets.QToolBar(MainWindow)
-        self.toolBar.setObjectName("toolBar")
-        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
-        self.toolBar.addSeparator()
+        self.toolbar = QtWidgets.QToolBar(MainWindow)
+        self.toolbar.setObjectName("toolbar")
+        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
+        self.toolbar.addSeparator()
 
+        self.comboBoxIface = QComboBox()
+        self.toolbar.addWidget(self.comboBoxIface)
+        self.toolbar.addSeparator()
+
+        
+        self.buttonStart = QtWidgets.QPushButton()
+        self.buttonStart.setIcon(QIcon("./static/start.png"))
+        self.buttonStart.setStyleSheet("background:rgba(0,0,0,0);border:1px solid rgba(0,0,0,0);border-radius:5px;")
+        self.buttonStart.setToolTip("开始捕获")
+        self.toolbar.addWidget(self.buttonStart)
+        self.toolbar.addSeparator()
+
+        self.buttonPause = QtWidgets.QPushButton()
+        self.buttonPause.setIcon(QIcon("./static/pause.png"))
+        self.buttonPause.setStyleSheet("background:rgba(0,0,0,0);border:1px solid rgba(0,0,0,0);border-radius:5px;")
+        self.buttonPause.setToolTip("暂停捕获")
+        self.toolbar.addWidget(self.buttonPause)
+        self.toolbar.addSeparator()
+
+        self.buttonFilter = QtWidgets.QPushButton()
+        self.buttonFilter.setIcon(QIcon("./static/filter.png"))
+        self.buttonFilter.setStyleSheet("background:rgba(0,0,0,0);border:1px solid rgba(0,0,0,0);border-radius:5px;")
+        self.buttonFilter.setToolTip("过滤筛选")
+        self.toolbar.addWidget(self.buttonFilter)
+        self.toolbar.addSeparator()
+
+        
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -125,7 +153,8 @@ class SnifferGui(object):
         item.setText(_translate("MainWindow", "长度"))
         item = self.tableWidget.horizontalHeaderItem(6)
         item.setText(_translate("MainWindow", "信息"))
-        self.toolBar.setWindowTitle(_translate("MainWindow", "工具栏"))
+        self.toolbar.setWindowTitle(_translate("MainWindow", "工具栏"))
+        #self.buttonStart.setText(_translate("MainWindow", "开始"))
 
         self.tableWidget.horizontalHeader().setSectionsClickable(False) #可以禁止点击表头的列
         self.tableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows) #设置 不可选择单个单元格，只可选择一行。
@@ -138,14 +167,16 @@ class SnifferGui(object):
         self.tableWidget.setColumnWidth(5,60)
         self.tableWidget.setColumnWidth(6,600)
 
+        self.treeWidget.setHeaderHidden(True) #去掉表头
+        self.treeWidget.setColumnCount(1)
 
-if __name__ == "__main__":
+def GuiRun():
+    os.chdir(sys.path[0])
     app = QtWidgets.QApplication(sys.argv)
-
     MainWindow = QtWidgets.QMainWindow()
     ui = SnifferGui()
     ui.setupUi(MainWindow)
-
     MainWindow.show()
     sys.exit(app.exec_())
+    return ui
 
