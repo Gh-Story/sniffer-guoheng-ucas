@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1118</width>
+    <width>1122</width>
     <height>852</height>
    </rect>
   </property>
@@ -42,9 +42,15 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>1121</width>
+          <width>1500</width>
           <height>421</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>1500</width>
+          <height>0</height>
+         </size>
         </property>
         <column>
          <property name="text">
@@ -98,6 +104,29 @@
    </property>
    <property name="title">
     <string>GroupBox</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>490</y>
+     <width>551</width>
+     <height>361</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>GroupBox</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>10</y>
+     <width>321</width>
+     <height>31</height>
+    </rect>
    </property>
   </widget>
  </widget>
