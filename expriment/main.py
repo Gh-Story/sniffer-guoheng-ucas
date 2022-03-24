@@ -19,11 +19,9 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
-    
-    sn = Sniffer()  #M
-    sn.start()
-    sc = SnifferController(ui,sn)#C
-    
+
+    sc = SnifferController(ui)#C
+
     sc.loadAdapterIfaces()
     sc.setConnection()
 

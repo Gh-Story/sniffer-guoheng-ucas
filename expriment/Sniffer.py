@@ -5,6 +5,7 @@ Editor : GH
 This is a temporary script file.
 """
 
+from socket import timeout
 from scapy.all import *
 import os
 import time
@@ -14,22 +15,39 @@ import numpy as np
 import matplotlib.pyplot as plt
 import binascii
 from PyQt5 import QtCore,QtGui,QtWidgets
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+
 
 class Sniffer(QtCore.QThread):
+    HandleSignal = QtCore.pyqtSignal(scapy.layers.l2.Ether)
     def __init__(self) -> None:
         super().__init__()
-        pass
+        self.filter = None
+        self.iface = None
+        self.conditionFlag = False
+        self.mutex_1 = QMutex()
+        self.cond = QWaitCondition()
+        
 
-    def getAdapterIfaces(self):
-        c = []
-        for i in repr(conf.route).split('\n')[1:]:
-            tmp = i[50:94].rstrip()
-            if len(tmp)>0:
-                c.append(tmp)
-        c = list(set(c))
-        return c
-    
     def run(self):
-        pass
+        while True :
+            self.mutex_1.lock()
+            if self.conditionFlag :
+                self.cond.wait(self.mutex_1)
+            sniff(filter=self.filter,iface=self.iface,prn=lambda x:self.HandleSignal.emit(x),count = 1,timeout=5)
+            self.mutex_1.unlock()
+
+    def pause(self):
+        self.conditionFlag = True
+
+    def resume(self):
+        self.conditionFlag = False
+        self.cond.wakeAll()   
+
+        
+    
+    
+
 
 

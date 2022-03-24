@@ -3,6 +3,7 @@
 Editor : GH
 
 """
+
 from PyQt5 import QtCore,QtGui,QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -12,6 +13,8 @@ import os
 
 class SnifferGui(object):
     def setupUi(self, MainWindow):
+        self.startTime = None
+        self.filter = None
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1244, 890)
         MainWindow.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
@@ -172,6 +175,12 @@ class SnifferGui(object):
 
     def setAdapterIfaces(self,c):
         self.comboBoxIfaces.addItems(c)
+
+    def setTableItems(self):
+        global counts
+        global displays
+
+        pass
 
     
 
