@@ -12,11 +12,24 @@ import multiprocessing
 from scapy.layers import http
 import numpy as np
 import matplotlib.pyplot as plt
+import binascii
+from PyQt5 import QtCore,QtGui,QtWidgets
 
-class Sniffer():
+class Sniffer(QtCore.QThread):
     def __init__(self) -> None:
+        super().__init__()
         pass
 
-def SnifferRun():
-    sn = Sniffer()
-    return sn
+    def getAdapterIfaces(self):
+        c = []
+        for i in repr(conf.route).split('\n')[1:]:
+            tmp = i[50:94].rstrip()
+            if len(tmp)>0:
+                c.append(tmp)
+        c = list(set(c))
+        return c
+    
+    def run(self):
+        pass
+
+

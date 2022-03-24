@@ -106,8 +106,8 @@ class SnifferGui(object):
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
         self.toolbar.addSeparator()
 
-        self.comboBoxIface = QComboBox()
-        self.toolbar.addWidget(self.comboBoxIface)
+        self.comboBoxIfaces = QComboBox()
+        self.toolbar.addWidget(self.comboBoxIfaces)
         self.toolbar.addSeparator()
 
         
@@ -170,13 +170,10 @@ class SnifferGui(object):
         self.treeWidget.setHeaderHidden(True) #去掉表头
         self.treeWidget.setColumnCount(1)
 
-def GuiRun():
-    os.chdir(sys.path[0])
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = SnifferGui()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
-    return ui
+    def setAdapterIfaces(self,c):
+        self.comboBoxIfaces.addItems(c)
+
+    
+
+
 

@@ -13,8 +13,19 @@ import os
 
 if __name__ == "__main__":
     #vscode的python插件是直接绝对路径运行,所以加载icon会出问题，需要先chdir保证相对路径正确
-    ui = GuiRun()
-    sn = SnifferRun()
-    sc = ControllerRun()
-    sc.setUi(ui)
-    sc.setSniffer(sn)
+    os.chdir(sys.path[0])
+    app = QtWidgets.QApplication(sys.argv)
+    ui = SnifferGui() #v
+    MainWindow = QtWidgets.QMainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    
+    sn = Sniffer()  #M
+    sn.start()
+    sc = SnifferController(ui,sn)#C
+    
+    sc.loadAdapterIfaces()
+    sc.setConnection()
+
+    sys.exit(app.exec_())
+   
