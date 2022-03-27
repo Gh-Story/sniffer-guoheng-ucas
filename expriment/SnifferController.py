@@ -104,5 +104,5 @@ class SnifferController():
     def Filter(self):
         self.ui.buildFilter()
     def Trace(self):
-        pass
+        self.ui.Trace()
  

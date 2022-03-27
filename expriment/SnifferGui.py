@@ -419,45 +419,50 @@ class SnifferGui(object):
 
     def buildFilter(self):
         list = ["指定源IP地址","指定目的IP地址", "指定源端口","指定目的端口","指定协议类型"]   
-        item, ok = QInputDialog.getItem(self.MainWindow, "选项","规则列表", list, 1, False)
+        item, ok = QInputDialog.getItem(self.MainWindow, "捕获前选项","规则列表", list, 1, False)
         if ok:
             if item=="指定源IP地址":
-                 filter,ok_1 = QInputDialog.getText(self.MainWindow, "标题","请输入指定源IP地址:",QLineEdit.Normal, "*.*.*.*")
-                 rule = "src host "+filter
+                filter,ok_1 = QInputDialog.getText(self.MainWindow, "标题","请输入指定源IP地址:",QLineEdit.Normal, "*.*.*.*")
+                rule = "src host "+filter
             elif item =="指定目的IP地址"  :
-                 filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定目的IP地址:",QLineEdit.Normal, "*.*.*.*")
-                 rule= "dst host "+filter
+                filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定目的IP地址:",QLineEdit.Normal, "*.*.*.*")
+                rule= "dst host "+filter
             elif item =="指定源端口":
-                 filter,ok_3 = QInputDialog.getInt(self.MainWindow, "标题","请输入指定源端口:",80, 0, 65535)
-                 rule="src port "+str(filter)
+                filter,ok_3 = QInputDialog.getInt(self.MainWindow, "标题","请输入指定源端口:",80, 0, 65535)
+                rule="src port "+str(filter)
             elif item =="指定目的端口":
-                 filter,ok_4 = QInputDialog.getInt(self.MainWindow, "标题","请输入指定目的端口:",80, 0, 65535)
-                 rule ="dst port "+str(filter)
+                filter,ok_4 = QInputDialog.getInt(self.MainWindow, "标题","请输入指定目的端口:",80, 0, 65535)
+                rule ="dst port "+str(filter)
             elif item =="指定协议类型" :
-                 filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定协议类型:",QLineEdit.Normal, "icmp/arp/tcp/udp/igmp/...")
-                 rule =filter
+                filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定协议类型:",QLineEdit.Normal, "icmp/arp/tcp/udp/igmp/...")
+                rule =filter
             rule=rule.lower()
             self.filter = rule
 
     def postFilter(self):
         list = ["指定源IP地址","指定目的IP地址", "指定源端口","指定目的端口","指定协议类型"]   
-        item, ok = QInputDialog.getItem(self.MainWindow, "选项","规则列表", list, 1, False)
+        item, ok = QInputDialog.getItem(self.MainWindow, "捕获后过滤选项","规则列表", list, 1, False)
         if ok:
             if item=="指定源IP地址":
-                filter,ok_1 = QInputDialog.getText(self.MainWindow, "标题","请输入指定源IP地址:",QLineEdit.Normal, "*.*.*.*")
-                self.postFilter_2(0,filter.lower())
+                filter,ok_1 = QInputDialog.getText(self.MainWindow, "标题","请输入指定源IP地址:",QLineEdit.Normal, "127.0.0.1")
+                if ok_1:
+                    self.postFilter_2(0,filter.lower())
             elif item =="指定目的IP地址"  :
-                filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定目的IP地址:",QLineEdit.Normal, "*.*.*.*")
-                self.postFilter_2(1,filter.lower())
+                filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定目的IP地址:",QLineEdit.Normal, "127.0.0.1")
+                if ok_2:
+                    self.postFilter_2(1,filter.lower())
             elif item =="指定源端口":
                 filter,ok_3 = QInputDialog.getInt(self.MainWindow, "标题","请输入指定源端口:",80, 0, 65535)
-                self.postFilter_2(2,filter.lower())
+                if ok_3:
+                    self.postFilter_2(2,filter.lower())
             elif item =="指定目的端口":
                 filter,ok_4 = QInputDialog.getInt(self.MainWindow, "标题","请输入指定目的端口:",80, 0, 65535)
-                self.postFilter_2(3,filter.lower())
+                if ok_4:    
+                    self.postFilter_2(3,filter.lower())
             elif item =="指定协议类型" :
-                filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定协议类型:",QLineEdit.Normal, "icmp/arp/tcp/udp/igmp/...")
-                self.postFilter_2(4,filter.lower())
+                filter,ok_5 = QInputDialog.getText(self.MainWindow, "标题","请输入指定协议类型:",QLineEdit.Normal, "icmp/arp/tcp/udp/igmp/...")
+                if ok_5:
+                    self.postFilter_2(4,filter.lower())
                     
     def postFilter_2(self,index,filter):
         global displays
@@ -500,7 +505,9 @@ class SnifferGui(object):
                 else:
                     self.tableWidget.setRowHidden(row,False)
                     displays+=1
-            
+
+    def Trace(self):
+        print("trace tcp") 
         
     
 
