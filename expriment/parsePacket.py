@@ -8,6 +8,7 @@ class MyPacket():
         self.packTimne = None
         self.lens = None
         self.packer = None
+        self.tcptrace = None
         self.layer_4 = {'name' : None, 'src': None, 'dst': None,'info':None}
         # IP ARP
         self.layer_3 = {'name' : None, 'src': None, 'dst': None,'version': None,\
@@ -18,7 +19,8 @@ class MyPacket():
         #TCP UDP ICMP IGMP OTHERS
         self.layer_2 = {'name':None, 'src': None, 'dst': None, 'seq':None, 'ack':None,\
             'dataofs':None, 'reserved':None, 'flag':None, 'len':None, 'chksum':None,\
-            'type':None, 'code':None, 'id':None,'info':None, 'window':None
+            'type':None, 'code':None, 'id':None,'info':None, 'window':None, 'tcptrace':None,\
+            'tcpSdTrace': None, 'tcpRcTrace':None
             }
         #HTTP HTTPS
         self.layer_1 = {'name':None, 'info':None}
@@ -84,6 +86,9 @@ class MyPacket():
     def parseLayer_2(self,packet,num):
         if num == 4:
             if packet[IP].proto == 6:#TCP
+                self.layer_2['tcptrace'] = ('%s %s %s %s' % (packet[IP].src, packet[IP].dst,packet[TCP].sport, packet[TCP].dport))
+                self.layer_2['tcpSdTrace'] = ('%s %s' % (packet[IP].src,packet[TCP].sport))
+                self.layer_2['tcpRcTrace'] = ('%s %s' % (packet[IP].dst, packet[TCP].dport))
                 self.layer_2['name'] = 'TCP'
                 self.layer_2['src'] = packet[TCP].sport
                 self.layer_2['dst'] = packet[TCP].dport
@@ -129,6 +134,9 @@ class MyPacket():
                 self.layer_2['info'] = '未知协议，等待补充'
         elif num == 6:
             if packet[IPv6].nh == 6:#TCP
+                self.layer_2['tcptrace'] = ('%s %s %s %s' % (packet[IPv6].src, packet[IPv6].dst,packet[TCP].sport, packet[TCP].dport))
+                self.layer_2['tcpSdTrace'] = ('%s %s' % (packet[IPv6].src,packet[TCP].sport))
+                self.layer_2['tcpRcTrace'] = ('%s %s' % (packet[IPv6].dst, packet[TCP].dport))
                 self.layer_2['name'] = 'TCP'
                 self.layer_2['src'] = packet[TCP].sport
                 self.layer_2['dst'] = packet[TCP].dport

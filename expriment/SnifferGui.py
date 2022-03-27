@@ -507,7 +507,23 @@ class SnifferGui(object):
                     displays+=1
 
     def Trace(self):
-        print("trace tcp") 
+        list = ["根据源ip + 目的ip + 源端口 + 目的端口(进程间通信)","根据源ip+源端口(某进程产生的所有包)", "根据目的ip + 目的端口(某进程接受的所有包)"]   
+        item, ok = QInputDialog.getItem(self.MainWindow, "TCP追踪","规则列表", list, 1, False)
+        if ok:
+            if item == "根据源ip + 目的ip + 源端口 + 目的端口(进程间通信)":
+                keys = 'tcptrace'
+            elif item == "根据源ip+源端口(某进程产生的所有包)":
+                keys = 'tcpSdTrace'
+            elif item == "根据目的ip + 目的端口(某进程接受的所有包)":
+                keys = 'tcpRcTrace'
+            row = self.tableWidget.currentRow()     #获取当前行数
+            mypacket = self.packList[row]
+            trace = mypacket.layer_2[keys]
+            for row in range(len(self.packList)):
+                if self.packList[row].layer_2[keys] == trace:
+                    self.tableWidget.setRowHidden(row,False)
+                else:
+                    self.tableWidget.setRowHidden(row,True)
         
     
 
