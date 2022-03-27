@@ -100,7 +100,9 @@ class SnifferGui(object):
         self.gridLayoutMainShow.addWidget(self.tableWidget, 0, 0, 1, 1)
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.contextMenu = QMenu(self.tableWidget)
+        self.saveAction = self.contextMenu.addAction(u'另存为pdf')
         self.TraceAction = self.contextMenu.addAction(u'追踪TCP')
+        
 
         #顶部工具栏 菜单栏 状态栏
         self.gridLayoutBar.addLayout(self.gridLayoutMainShow, 0, 0, 1, 1)
@@ -144,15 +146,22 @@ class SnifferGui(object):
         self.buttonFilter = QtWidgets.QPushButton()
         self.buttonFilter.setIcon(QIcon("./static/filter.png"))
         self.buttonFilter.setStyleSheet("background:rgba(0,0,0,0);border:1px solid rgba(0,0,0,0);border-radius:5px;")
-        self.buttonFilter.setToolTip("捕获前过滤筛选")
+        self.buttonFilter.setToolTip("先停止捕获，捕获前过滤筛选")
         self.toolbar.addWidget(self.buttonFilter)
         self.toolbar.addSeparator()
 
         self.buttonPostFilter = QtWidgets.QPushButton()
         self.buttonPostFilter.setIcon(QIcon("./static/search.png"))
         self.buttonPostFilter.setStyleSheet("background:rgba(0,0,0,0);border:1px solid rgba(0,0,0,0);border-radius:5px;")
-        self.buttonPostFilter.setToolTip("捕获后过滤筛选")
+        self.buttonPostFilter.setToolTip("先停止捕获，捕获后过滤筛选")
         self.toolbar.addWidget(self.buttonPostFilter)
+        self.toolbar.addSeparator()
+
+        self.buttonRe = QtWidgets.QPushButton()
+        self.buttonRe.setIcon(QIcon("./static/reset.png"))
+        self.buttonRe.setStyleSheet("background:rgba(0,0,0,0);border:1px solid rgba(0,0,0,0);border-radius:5px;")
+        self.buttonRe.setToolTip("清空捕获后筛选记录,显示所有结果")
+        self.toolbar.addWidget(self.buttonRe)
         self.toolbar.addSeparator()
         
         self.retranslateUi(MainWindow)
@@ -201,9 +210,7 @@ class SnifferGui(object):
         '''
         右键点击时调用的函数
         '''
-        row = self.tableWidget.currentRow()
-        if self.packList[row].layer_2['name'] == 'TCP':
-            self.contextMenu.exec_(QCursor.pos())
+        self.contextMenu.exec_(QCursor.pos())
 
     def setAdapterIfaces(self,c):
         self.comboBoxIfaces.addItems(c)
@@ -507,23 +514,31 @@ class SnifferGui(object):
                     displays+=1
 
     def Trace(self):
-        list = ["根据源ip + 目的ip + 源端口 + 目的端口(进程间通信)","根据源ip+源端口(某进程产生的所有包)", "根据目的ip + 目的端口(某进程接受的所有包)"]   
-        item, ok = QInputDialog.getItem(self.MainWindow, "TCP追踪","规则列表", list, 1, False)
-        if ok:
-            if item == "根据源ip + 目的ip + 源端口 + 目的端口(进程间通信)":
-                keys = 'tcptrace'
-            elif item == "根据源ip+源端口(某进程产生的所有包)":
-                keys = 'tcpSdTrace'
-            elif item == "根据目的ip + 目的端口(某进程接受的所有包)":
-                keys = 'tcpRcTrace'
-            row = self.tableWidget.currentRow()     #获取当前行数
-            mypacket = self.packList[row]
-            trace = mypacket.layer_2[keys]
-            for row in range(len(self.packList)):
-                if self.packList[row].layer_2[keys] == trace:
-                    self.tableWidget.setRowHidden(row,False)
-                else:
-                    self.tableWidget.setRowHidden(row,True)
+        row = self.tableWidget.currentRow()
+        if self.packList[row].layer_2['name'] == 'TCP':
+            list = ["根据源ip + 目的ip + 源端口 + 目的端口(进程间通信)","根据源ip+源端口(某进程产生的所有包)", "根据目的ip + 目的端口(某进程接受的所有包)"]   
+            item, ok = QInputDialog.getItem(self.MainWindow, "TCP追踪","规则列表", list, 1, False)
+            if ok:
+                if item == "根据源ip + 目的ip + 源端口 + 目的端口(进程间通信)":
+                    keys = 'tcptrace'
+                elif item == "根据源ip+源端口(某进程产生的所有包)":
+                    keys = 'tcpSdTrace'
+                elif item == "根据目的ip + 目的端口(某进程接受的所有包)":
+                    keys = 'tcpRcTrace'     
+                mypacket = self.packList[row]
+                trace = mypacket.layer_2[keys]
+                for row in range(len(self.packList)):
+                    if self.packList[row].layer_2[keys] == trace:
+                        self.tableWidget.setRowHidden(row,False)
+                    else:
+                        self.tableWidget.setRowHidden(row,True)
+        else:
+            QMessageBox.information(self.MainWindow,'提示','非TCP相关协议，无法追踪', QMessageBox.Ok, QMessageBox.Close)
+    
+    def Reset(self):
+        for row in range(len(self.packList)):
+            self.tableWidget.setRowHidden(row,False)
+
         
     
 

@@ -39,6 +39,8 @@ class SnifferController():
         self.ui.buttonPostFilter.clicked.connect(self.PostFilter)
         self.ui.tableWidget.customContextMenuRequested.connect(self.ui.showContextMenu)
         self.ui.TraceAction.triggered.connect(self.Trace)
+        self.ui.saveAction.triggered.connect(self.Save)
+        self.ui.buttonRe.clicked.connect(self.ui.Reset)
        
 
     
@@ -105,4 +107,8 @@ class SnifferController():
         self.ui.buildFilter()
     def Trace(self):
         self.ui.Trace()
+    
+    def Save(self):
+        print("save")
+        pass
  
