@@ -210,8 +210,9 @@ class SnifferGui(object):
         '''
         右键点击时调用的函数
         '''
-        
-        #self.contextMenu.exec_(QCursor.pos())
+        row = self.tableWidget.currentRow()
+        if self.packList[row].layer_2['name'] == 'TCP':
+            self.contextMenu.exec_(QCursor.pos())
 
     def setAdapterIfaces(self,c):
         self.comboBoxIfaces.addItems(c)
@@ -467,8 +468,8 @@ class SnifferGui(object):
                 filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定协议类型:",QLineEdit.Normal, "icmp/arp/tcp/udp/igmp/...")
                 self.postFilter_2(4,filter.lower())
                     
-
     def postFilter_2(self,index,filter):
+        print(filter)
         rows = self.tableWidget.rowCount()
         if index == 0:
             for row in range(rows):
@@ -496,6 +497,7 @@ class SnifferGui(object):
                     self.tableWidget.setRowHidden(row,False)
         else:
             for row in range(rows):
+                filter = filter.upper()
                 if self.packList[row].layer_2['name'] != filter and self.packList[row].layer_3['name'] != filter and \
                     self.packList[row].layer_1['name'] != filter :
                     self.tableWidget.setRowHidden(row,True)

@@ -105,6 +105,8 @@ class MyPacket():
                 self.layer_2['len'] = packet[UDP].len
                 self.layer_2['chksum'] = packet[UDP].chksum
                 self.layer_2['info'] =  ('源端口%s -> 目的端口%s 长度(len)：%s' % (packet[UDP].sport,packet[UDP].dport,packet[UDP].len))
+                if packet.haslayer('DNS'):
+                    self.parseLayer_1(packet, 7)
             elif packet[IP].proto == 1:#ICMP
                 self.layer_2['name'] = 'ICMP'
                 self.layer_2['type'] = packet[ICMP].type
@@ -148,6 +150,8 @@ class MyPacket():
                 self.layer_2['len'] = packet[UDP].len
                 self.layer_2['chksum'] = packet[UDP].chksum
                 self.layer_2['info'] =  ('源端口：%s -> 目的端口%s 长度(len)：%s' % (packet[UDP].sport,packet[UDP].dport,packet[UDP].len))
+                if packet.haslayer('DNS'):
+                    self.parseLayer_1(packet, 7)
             elif packet[IPv6].nh == 1:#ICMP
                 self.layer_2['name'] = 'ICMP'
                 self.layer_2['type'] = packet[ICMP].type
@@ -180,4 +184,14 @@ class MyPacket():
         elif num ==6:#HTTPS
             self.layer_1['name'] ='HTTPS'
             self.layer_1['info'] = ('%s -> %s Seq：%s Ack：%s Win：%s' % (packet[TCP].sport,packet[TCP].dport,packet[TCP].seq,packet[TCP].ack,packet[TCP].window))
+        elif num == 7:#DNS
+            self.layer_1['name'] ='DNS'
+            if packet[DNS].opcode == 0:#Query
+                tmp = '??'
+                if packet[DNS].qd :
+                    tmp = bytes.decode(packet[DNS].qd.qname)
+                self.layer_1['info'] = ('源端口：%s -> 目的端口%s 长度(len)：%s DNS 查询: %s 在哪里' % (packet[UDP].sport,packet[UDP].dport,packet[UDP].len,tmp))
+            else:
+                self.layer_1['info'] = ('源端口：%s -> 目的端口%s 长度(len)：%s DNS 回答' % (packet[UDP].sport,packet[UDP].dport,packet[UDP].len))
+
 
