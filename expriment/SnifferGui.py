@@ -99,9 +99,8 @@ class SnifferGui(object):
         self.tableWidget.setHorizontalHeaderItem(6, item)
         self.gridLayoutMainShow.addWidget(self.tableWidget, 0, 0, 1, 1)
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.tableWidget.customContextMenuRequested.connect(self.showContextMenu)
         self.contextMenu = QMenu(self.tableWidget)
-        self.pdfdumpActionA = self.contextMenu.addAction(u'追踪TCP')
+        self.TraceAction = self.contextMenu.addAction(u'追踪TCP')
 
         #顶部工具栏 菜单栏 状态栏
         self.gridLayoutBar.addLayout(self.gridLayoutMainShow, 0, 0, 1, 1)
@@ -155,14 +154,6 @@ class SnifferGui(object):
         self.buttonPostFilter.setToolTip("捕获后过滤筛选")
         self.toolbar.addWidget(self.buttonPostFilter)
         self.toolbar.addSeparator()
-
-        self.buttonTrace = QtWidgets.QPushButton()
-        self.buttonTrace.setIcon(QIcon("./static/trace.png"))
-        self.buttonTrace.setStyleSheet("background:rgba(0,0,0,0);border:1px solid rgba(0,0,0,0);border-radius:5px;")
-        self.buttonTrace.setToolTip("追踪TCP，请选定一栏数据包")
-        self.toolbar.addWidget(self.buttonTrace)
-        self.toolbar.addSeparator()
-
         
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -452,6 +443,7 @@ class SnifferGui(object):
         list = ["指定源IP地址","指定目的IP地址", "指定源端口","指定目的端口","指定协议类型"]   
         item, ok = QInputDialog.getItem(self.MainWindow, "选项","规则列表", list, 1, False)
         if ok:
+            print('guolv')
             if item=="指定源IP地址":
                 filter,ok_1 = QInputDialog.getText(self.MainWindow, "标题","请输入指定源IP地址:",QLineEdit.Normal, "*.*.*.*")
                 self.postFilter_2(0,filter.lower())
@@ -469,7 +461,8 @@ class SnifferGui(object):
                 self.postFilter_2(4,filter.lower())
                     
     def postFilter_2(self,index,filter):
-        print(filter)
+        global displays
+        displays = 0
         rows = self.tableWidget.rowCount()
         if index == 0:
             for row in range(rows):
@@ -477,32 +470,45 @@ class SnifferGui(object):
                     self.tableWidget.setRowHidden(row,True)
                 else:
                     self.tableWidget.setRowHidden(row,False)
+                    displays+=1
         elif index == 1:
             for row in range(rows):
                 if str(self.packList[row].layer_3['dst']).lower() != filter :
                     self.tableWidget.setRowHidden(row,True)
                 else:
                     self.tableWidget.setRowHidden(row,False)
+                    displays+=1
         elif index == 2:
             for row in range(rows):
                 if str(self.packList[row].layer_2['src']).lower() != filter :
                     self.tableWidget.setRowHidden(row,True)
                 else:
                     self.tableWidget.setRowHidden(row,False)
+                    displays+=1
         elif index == 3:
             for row in range(rows):
                 if str(self.packList[row].layer_2['dst']).lower() != filter :
                     self.tableWidget.setRowHidden(row,True)
                 else:
                     self.tableWidget.setRowHidden(row,False)
+                    displays+=1
         else:
+            print('xieyiguolv')
             for row in range(rows):
                 filter = filter.upper()
+                print(filter)
+                print(self.packList[row].layer_2['name'])
+                print(self.packList[row].layer_3['name'])
+                print(self.packList[row].layer_1['name'])
+                print(self.packList[row].layer_2['name'] != filter and self.packList[row].layer_3['name'] != filter and \
+                    self.packList[row].layer_1['name'] != filter)
+                print()
                 if self.packList[row].layer_2['name'] != filter and self.packList[row].layer_3['name'] != filter and \
                     self.packList[row].layer_1['name'] != filter :
                     self.tableWidget.setRowHidden(row,True)
                 else:
                     self.tableWidget.setRowHidden(row,False)
+                    displays+=1
             
         
     
