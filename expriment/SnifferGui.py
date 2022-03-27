@@ -443,7 +443,6 @@ class SnifferGui(object):
         list = ["指定源IP地址","指定目的IP地址", "指定源端口","指定目的端口","指定协议类型"]   
         item, ok = QInputDialog.getItem(self.MainWindow, "选项","规则列表", list, 1, False)
         if ok:
-            print('guolv')
             if item=="指定源IP地址":
                 filter,ok_1 = QInputDialog.getText(self.MainWindow, "标题","请输入指定源IP地址:",QLineEdit.Normal, "*.*.*.*")
                 self.postFilter_2(0,filter.lower())
@@ -493,16 +492,8 @@ class SnifferGui(object):
                     self.tableWidget.setRowHidden(row,False)
                     displays+=1
         else:
-            print('xieyiguolv')
             for row in range(rows):
                 filter = filter.upper()
-                print(filter)
-                print(self.packList[row].layer_2['name'])
-                print(self.packList[row].layer_3['name'])
-                print(self.packList[row].layer_1['name'])
-                print(self.packList[row].layer_2['name'] != filter and self.packList[row].layer_3['name'] != filter and \
-                    self.packList[row].layer_1['name'] != filter)
-                print()
                 if self.packList[row].layer_2['name'] != filter and self.packList[row].layer_3['name'] != filter and \
                     self.packList[row].layer_1['name'] != filter :
                     self.tableWidget.setRowHidden(row,True)
