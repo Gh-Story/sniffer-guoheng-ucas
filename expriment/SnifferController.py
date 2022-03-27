@@ -47,7 +47,7 @@ class SnifferController():
             self.setSniffer()
             self.sniffer.HandleSignal.connect(self.myCallBack)
             self.sniffer.start()
-            print(True)
+            print('start sniffing')
         elif self.sniffer.conditionFlag :
             if self.ui.iface != self.ui.comboBoxIfaces.currentText()  or self.sniffer.filter != self.ui.filter :
                 self.setSniffer()
@@ -94,7 +94,7 @@ class SnifferController():
         self.ui.setTableItems(res)
 
     def PostFilter(self):
-        pass
+        self.ui.postFilter()
 
     def Trace(self):
         pass

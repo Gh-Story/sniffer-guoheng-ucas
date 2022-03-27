@@ -99,6 +99,9 @@ class SnifferGui(object):
         self.tableWidget.setHorizontalHeaderItem(6, item)
         self.gridLayoutMainShow.addWidget(self.tableWidget, 0, 0, 1, 1)
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tableWidget.customContextMenuRequested.connect(self.showContextMenu)
+        self.contextMenu = QMenu(self.tableWidget)
+        self.pdfdumpActionA = self.contextMenu.addAction(u'追踪TCP')
 
         #顶部工具栏 菜单栏 状态栏
         self.gridLayoutBar.addLayout(self.gridLayoutMainShow, 0, 0, 1, 1)
@@ -198,6 +201,18 @@ class SnifferGui(object):
         self.treeWidget.setHeaderHidden(True) #去掉表头
         self.treeWidget.setColumnCount(1)
 
+        self.timer = QTimer(self.MainWindow)
+        self.timer.timeout.connect(self.statistics)
+        #开启统计
+        self.timer.start(1000)
+
+    def showContextMenu(self):
+        '''
+        右键点击时调用的函数
+        '''
+        
+        #self.contextMenu.exec_(QCursor.pos())
+
     def setAdapterIfaces(self,c):
         self.comboBoxIfaces.addItems(c)
 
@@ -217,7 +232,6 @@ class SnifferGui(object):
             self.tableWidget.setItem(row,5, QtWidgets.QTableWidgetItem(res[4]))
             self.tableWidget.setItem(row,6, QtWidgets.QTableWidgetItem(res[5]))
             self.packList.append(res[6])
-            self.statistics()
     
     def setLayer_5(self,row,times):
         num = self.tableWidget.item(row,0).text()
@@ -431,11 +445,64 @@ class SnifferGui(object):
                  filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定协议类型:",QLineEdit.Normal, "icmp/arp/tcp/udp/igmp/...")
                  rule =filter
             rule=rule.lower()
-            print(rule)
             self.filter = rule
 
     def postFilter(self):
-        filter,ok = QInputDialog.getText(self, "过滤前需要停止抓包","请输入需要搜索的字段:",QLineEdit.Normal, "http")
+        list = ["指定源IP地址","指定目的IP地址", "指定源端口","指定目的端口","指定协议类型"]   
+        item, ok = QInputDialog.getItem(self.MainWindow, "选项","规则列表", list, 1, False)
+        if ok:
+            if item=="指定源IP地址":
+                filter,ok_1 = QInputDialog.getText(self.MainWindow, "标题","请输入指定源IP地址:",QLineEdit.Normal, "*.*.*.*")
+                self.postFilter_2(0,filter.lower())
+            elif item =="指定目的IP地址"  :
+                filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定目的IP地址:",QLineEdit.Normal, "*.*.*.*")
+                self.postFilter_2(1,filter.lower())
+            elif item =="指定源端口":
+                filter,ok_3 = QInputDialog.getInt(self.MainWindow, "标题","请输入指定源端口:",80, 0, 65535)
+                self.postFilter_2(2,filter.lower())
+            elif item =="指定目的端口":
+                filter,ok_4 = QInputDialog.getInt(self.MainWindow, "标题","请输入指定目的端口:",80, 0, 65535)
+                self.postFilter_2(3,filter.lower())
+            elif item =="指定协议类型" :
+                filter,ok_2 = QInputDialog.getText(self.MainWindow, "标题","请输入指定协议类型:",QLineEdit.Normal, "icmp/arp/tcp/udp/igmp/...")
+                self.postFilter_2(4,filter.lower())
+                    
+
+    def postFilter_2(self,index,filter):
+        rows = self.tableWidget.rowCount()
+        if index == 0:
+            for row in range(rows):
+                if str(self.packList[row].layer_3['src']).lower() != filter :
+                    self.tableWidget.setRowHidden(row,True)
+                else:
+                    self.tableWidget.setRowHidden(row,False)
+        elif index == 1:
+            for row in range(rows):
+                if str(self.packList[row].layer_3['dst']).lower() != filter :
+                    self.tableWidget.setRowHidden(row,True)
+                else:
+                    self.tableWidget.setRowHidden(row,False)
+        elif index == 2:
+            for row in range(rows):
+                if str(self.packList[row].layer_2['src']).lower() != filter :
+                    self.tableWidget.setRowHidden(row,True)
+                else:
+                    self.tableWidget.setRowHidden(row,False)
+        elif index == 3:
+            for row in range(rows):
+                if str(self.packList[row].layer_2['dst']).lower() != filter :
+                    self.tableWidget.setRowHidden(row,True)
+                else:
+                    self.tableWidget.setRowHidden(row,False)
+        else:
+            for row in range(rows):
+                if self.packList[row].layer_2['name'] != filter and self.packList[row].layer_3['name'] != filter and \
+                    self.packList[row].layer_1['name'] != filter :
+                    self.tableWidget.setRowHidden(row,True)
+                else:
+                    self.tableWidget.setRowHidden(row,False)
+            
+        
     
 
 
