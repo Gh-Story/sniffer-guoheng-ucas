@@ -20,7 +20,7 @@ from PyQt5.QtCore import *
 
 
 class Sniffer(QtCore.QThread):
-    HandleSignal = QtCore.pyqtSignal(scapy.layers.l2.Ether)
+    HandleSignal = QtCore.pyqtSignal(scapy.packet.Packet)#scapy.layers.l2.Ether)
     def __init__(self) -> None:
         super().__init__()
         self.filter = None
@@ -35,8 +35,9 @@ class Sniffer(QtCore.QThread):
             self.mutex_1.lock()
             if self.conditionFlag :
                 self.cond.wait(self.mutex_1)
-            sniff(filter=self.filter,iface=self.iface,prn=lambda x:self.HandleSignal.emit(x),count = 1,timeout=5)
+            sniff(filter=self.filter,iface=self.iface,prn=lambda x:self.HandleSignal.emit(x),count = 1,timeout=2)
             self.mutex_1.unlock()
+            
 
     def pause(self):
         self.conditionFlag = True
@@ -45,8 +46,10 @@ class Sniffer(QtCore.QThread):
         self.conditionFlag = False
         self.cond.wakeAll()   
 
-        
-    
+'''test 
+ifa = "Intel(R) Dual Band Wireless-AC 3168"
+pkg = sniff(iface=ifa,count = 1) 
+'''   
     
 
 
