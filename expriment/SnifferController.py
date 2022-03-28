@@ -109,6 +109,21 @@ class SnifferController():
         self.ui.Trace()
     
     def Save(self):
-        print("save")
-        pass
+        try:
+            row = self.ui.tableWidget.currentRow()     #获取当前行数
+            packet = self.ui.packList[row].packet
+            path, filetype = QtWidgets.QFileDialog.getSaveFileName(None,
+                                    "选择保存路径",
+                                    "./",
+                                    "pdf文件(*.pdf);;全部(*)")
+            if path == "":
+                return
+            if os.path.exists(os.path.dirname(path)) == False:
+                QtWidgets.QMessageBox.critical(None,"错误","路径不存在")
+                return
+        
+            packet.pdfdump(path,layer_shift=1)
+            QtWidgets.QMessageBox.information(None,"成功","保存成功")
+        except ImportError as  e:
+            QtWidgets.QMessageBox.critical(None,"错误",str(e))
  

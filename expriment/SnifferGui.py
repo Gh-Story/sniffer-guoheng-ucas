@@ -533,7 +533,7 @@ class SnifferGui(object):
                     else:
                         self.tableWidget.setRowHidden(row,True)
         else:
-            QMessageBox.information(self.MainWindow,'提示','非TCP相关协议，无法追踪', QMessageBox.Ok, QMessageBox.Close)
+            QtWidgets.QMessageBox.critical(None,"错误","非TCP相关协议，无法追踪")
     
     def Reset(self):
         for row in range(len(self.packList)):

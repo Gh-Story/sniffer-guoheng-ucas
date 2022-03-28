@@ -7,7 +7,7 @@ class MyPacket():
         # ether  loopback
         self.packTimne = None
         self.lens = None
-        self.packer = None
+        self.packet = None
         self.tcptrace = None
         self.layer_4 = {'name' : None, 'src': None, 'dst': None,'info':None}
         # IP ARP
