@@ -100,7 +100,7 @@ class SnifferGui(object):
         self.gridLayoutMainShow.addWidget(self.tableWidget, 0, 0, 1, 1)
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.contextMenu = QMenu(self.tableWidget)
-        self.saveAction = self.contextMenu.addAction(u'另存为pdf')
+        self.saveAction = self.contextMenu.addAction(u'另存为cap')
         self.TraceAction = self.contextMenu.addAction(u'追踪TCP')
         
 
